@@ -59,23 +59,23 @@ cd scripts && bash download.sh          # 国内加 --mirror 走镜像
 
 物理轴 P：
 
-| P | 名称 | 任务 |
-|---|---|---|
-| P1 | 场感知与落地 | L1-1, L2-1 |
-| P2 | 跨场耦合 | L1-3, L2-2 |
-| P3 | 机制归因 | L2-3, L1-2 |
-| P4 | 时间预测 | L3-1, L3-3 |
-| P5 | 反事实干预 | L3-2 |
+| P | 英文名 | 中文 | 任务 |
+|---|---|---|---|
+| P1 | Temporal Evolution Forecasting | 时间预测 | L3-1, L3-2 |
+| P2 | Physical Field Perception and Grounding | 场感知与落地 | L1-1, L1-2 |
+| P3 | Cross-Field Coupling Understanding | 跨场耦合理解 | L1-3, L2-1, L2-2 |
+| P4 | Counterfactual Intervention Reasoning | 反事实干预推理 | L3-3 |
+| P5 | Causal Mechanism Attribution | 机制归因 | L2-3 |
 
 火灾轴 T：
 
-| T | 名称 | 任务 |
-|---|---|---|
-| T1 | 早期预警 | L1-3, L1-2 |
-| T2 | 状态评估 | L1-1, L2-1 |
-| T3 | 机制诊断 | L2-3, L2-2 |
-| T4 | 演化预测 | L3-1, L3-3 |
-| T5 | 干预决策 | L3-2 |
+| T | 英文名 | 中文 | 任务 |
+|---|---|---|---|
+| T1 | Fire Evolution Prediction | 演化预测 | L3-1, L3-2, L1-2 |
+| T2 | Fire Early Warning | 早期预警 | L1-1 |
+| T3 | Fire State Assessment | 状态评估 | L1-3, L2-1, L2-2 |
+| T4 | Fire Intervention Decision-Making | 干预决策 | L3-3 |
+| T5 | Fire Mechanism Diagnosis | 机制诊断 | L2-3 |
 
 ## 安装
 
