@@ -38,7 +38,17 @@ def gold_linked_items(gold_rows, prediction_rows, support_scorer):
     return output
 
 
-def key(row): return (row.get("task"), row.get("track"), row.get("question_type"))
+def layer_label(row, group_by):
+    """Return the cell label for a row under the requested grouping."""
+    if group_by == "physical":
+        return row.get("physical_axis") or row.get("task")
+    if group_by == "fire":
+        return row.get("fire_axis") or row.get("task")
+    return row.get("task")
+
+
+def key(row, group_by="task"):
+    return (layer_label(row, group_by), row.get("track"), row.get("question_type"))
 
 
 def main():
@@ -46,6 +56,11 @@ def main():
     parser.add_argument("--gold", type=Path, required=True)
     parser.add_argument("--predictions", type=Path, nargs="+", required=True)
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--group-by", choices=("task", "physical", "fire"), default="task",
+                        help="group cells by task (default; 9-task x track x question_type = 36 cells), "
+                             "or by the five-layer physical axis (physical -> P1-P5, 20 cells) / "
+                             "fire axis (fire -> T1-T5, 20 cells). Requires gold rows carrying "
+                             "physical_axis / fire_axis labels.")
     args = parser.parse_args()
     package = Path(__file__).resolve().parent
     spec = importlib.util.spec_from_file_location("fwb_base_scorer", package / "score_fg9_predictions.py")
@@ -93,11 +108,13 @@ def main():
                 mechanism_tokens=deep_scorer.toks(deep_scorer.text(report.get("mechanism","")))
                 mf1=len(gold_tokens&mechanism_tokens)/len(gold_tokens) if gold_tokens else 0
             else: ef1 = mf1 = 0.0
-        scored.append({"task":gold["task"],"track":gold["track"],"question_type":gold["question_type"],"pairs":pairs,"ratio":ratio,"confidence":confidence,"correct":float(ratio==1),"evidence_f1":ef1,"mechanism_alignment":mf1})
+        scored.append({"task":gold["task"],"physical_axis":gold.get("physical_axis"),"fire_axis":gold.get("fire_axis"),
+                       "track":gold["track"],"question_type":gold["question_type"],"pairs":pairs,"ratio":ratio,
+                       "confidence":confidence,"correct":float(ratio==1),"evidence_f1":ef1,"mechanism_alignment":mf1})
     gls = {row["qa_id"]:row["gold_linked_support"] for row in gold_linked_items(gold_rows,prediction_rows,support_scorer)}
     for row,gold in zip(scored,gold_rows): row["gold_linked_support"] = gls[gold["qa_id"]]
     groups=defaultdict(list)
-    for row in scored: groups[key(row)].append(row)
+    for row in scored: groups[key(row, args.group_by)].append(row)
     def summarize(rows):
         fp=defaultdict(list)
         for row in rows:
@@ -110,8 +127,15 @@ def main():
                 "mechanism_alignment":sum(r["mechanism_alignment"] for r in open_rows)/len(open_rows) if open_rows else None,
                 "brier_score":sum((c-y)**2 for c,y in calibration)/len(calibration) if calibration else None,
                 "gold_linked_support":sum(r["gold_linked_support"] for r in open_rows)/len(open_rows) if open_rows else None}
+    if args.group_by == "task":
+        cells = [{"task": k[0], "track": k[1], "question_type": k[2], **summarize(v)} for k, v in sorted(groups.items())]
+        cells_key = "by_task_track_type"
+    else:
+        cells = [{"label": k[0], "track": k[1], "question_type": k[2], **summarize(v)} for k, v in sorted(groups.items())]
+        cells_key = "by_cell"
     result={"schema_version":"FWB-FG9-SIX-METRICS-v2-ACC","metrics":["completion_accuracy","macro_f1","evidence_f1","mechanism_alignment","brier_score","gold_linked_support"],
-            "overall":summarize(scored),"by_task_track_type":[{"task":k[0],"track":k[1],"question_type":k[2],**summarize(v)} for k,v in sorted(groups.items())],
+            "grouping": args.group_by,
+            "overall":summarize(scored),cells_key:cells,
             "notes":{"direction":"Higher is better except Brier Score, where lower is better.","scope":"Completion Accuracy, Macro-F1 and Brier apply to choice and open. Evidence-F1, Mechanism Alignment and Gold-linked Support apply to open responses only.","completion_accuracy":"For choice, mean Jaccard similarity between predicted and Gold option sets. For open, mean fraction of required fields predicted correctly.","judge":"All six metrics are deterministic; no model judge is used."}}
     args.output.parent.mkdir(parents=True,exist_ok=True); args.output.write_text(json.dumps(result,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
     print(json.dumps(result["overall"],ensure_ascii=False,indent=2))

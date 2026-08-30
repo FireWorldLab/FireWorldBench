@@ -31,11 +31,17 @@ python scripts/run_api.py --provider openai \
   --source-root FireWorldBench/main_synthetic \
   --output runs/main_model.jsonl --model "$OPENAI_MODEL"
 
-# 5) 计算六项指标
+# 5) 计算六项指标（默认按 9 任务分组 = 36 格）
 python scripts/score_six_metrics.py \
   --gold FireWorldBench/main_synthetic/full_test_A/gold.jsonl \
   --predictions runs/main_model.jsonl \
   --output results/main_model-six-metrics.json
+
+#    也可按五层能力轴分组：--group-by physical（P1-P5）或 fire（T1-T5），各 20 格
+python scripts/score_six_metrics.py \
+  --gold FireWorldBench/main_synthetic/full_test_A/gold.jsonl \
+  --predictions runs/main_model.jsonl --group-by physical \
+  --output results/main_model-six-metrics-physical.json
 ```
 
 用同一流程处理 `mmodalfire_c06/full_test_A`（真实事件，714 题）即可。
@@ -52,6 +58,31 @@ python scripts/score_six_metrics.py \
 每个子集内含 `questions.jsonl`（题目）与 `gold.jsonl`（标准答案，打分必需）。
 I 轨题目使用图像，图像位于 `assets/events/<event_id>/...`，由题目 `material` 字段中的
 `path`/`asset_path` 定位。字段与打分协议详见 HF 数据卡。
+
+每道题带**双轴五层能力标签**：`physical_axis`（物理轴 P1-P5）与 `fire_axis`（火灾轴 T1-T5）。
+两轴相互独立、各自均衡，覆盖全部题目。
+
+## 五层双轴划分
+
+| 物理轴 P | 名称 | 任务 |
+|---|---|---|
+| P1 | Field perception & grounding（场感知与落地） | L1-1, L2-1 |
+| P2 | Cross-field coupling（跨场耦合） | L1-3, L2-2 |
+| P3 | Mechanism attribution（机制归因） | L2-3, L1-2 |
+| P4 | Temporal forecasting（时间预测） | L3-1, L3-3 |
+| P5 | Counterfactual intervention（反事实干预） | L3-2 |
+
+| 火灾轴 T | 名称 | 任务 |
+|---|---|---|
+| T1 | Early warning（早期预警） | L1-3, L1-2 |
+| T2 | State assessment（状态评估） | L1-1, L2-1 |
+| T3 | Mechanism diagnosis（机制诊断） | L2-3, L2-2 |
+| T4 | Evolution prediction（演化预测） | L3-1, L3-3 |
+| T5 | Intervention decision（干预决策） | L3-2 |
+
+`main_synthetic/full_test_A`（8,360 题）按此划分的题量：
+物理轴 P1=1824 / P2=1724 / P3=1950 / P4=1718 / P5=1144；
+火灾轴 T1=1818 / T2=1824 / T3=1856 / T4=1718 / T5=1144。
 
 ## 脚本
 
@@ -75,7 +106,10 @@ I 轨题目使用图像，图像位于 `assets/events/<event_id>/...`，由题�
 | Gold-linked Support | 越高越好 | open |
 
 - **Completion Accuracy**：choice 为预测选项集合与 Gold 的 Jaccard 相似度均值；open 为必填字段预测正确的比例。
-- 结果按 **9 任务 × 2 轨（S/I）× 2 题型（choice/open）= 36 格** 报告，不合并隐藏单格失败。
+- 结果可用 `--group-by` 按三种维度分组报告，均不合并隐藏单格失败：
+  - `task`：9 任务 × 2 轨（S/I）× 2 题型（choice/open）= **36 格**
+  - `physical`：物理轴 P1-P5 × 2 轨 × 2 题型 = **20 格**
+  - `fire`：火灾轴 T1-T5 × 2 轨 × 2 题型 = **20 格**
 - 所有指标均为确定性计算，不依赖任何 LLM 判分。
 
 ## 许可
