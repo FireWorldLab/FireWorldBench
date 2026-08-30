@@ -56,11 +56,10 @@ def main():
     parser.add_argument("--gold", type=Path, required=True)
     parser.add_argument("--predictions", type=Path, nargs="+", required=True)
     parser.add_argument("--output", type=Path, required=True)
-    parser.add_argument("--group-by", choices=("task", "physical", "fire"), default="task",
-                        help="group cells by task (default; 9-task x track x question_type = 36 cells), "
-                             "or by the five-layer physical axis (physical -> P1-P5, 20 cells) / "
-                             "fire axis (fire -> T1-T5, 20 cells). Requires gold rows carrying "
-                             "physical_axis / fire_axis labels.")
+    parser.add_argument("--group-by", choices=("task", "physical", "fire"), default="physical",
+                        help="group cells by the five-layer physical axis (physical -> P1-P5, 20 cells, default), "
+                             "fire axis (fire -> T1-T5, 20 cells) or fine-grained task (36 cells). "
+                             "Requires gold rows carrying physical_axis / fire_axis labels.")
     args = parser.parse_args()
     package = Path(__file__).resolve().parent
     spec = importlib.util.spec_from_file_location("fwb_base_scorer", package / "score_fg9_predictions.py")

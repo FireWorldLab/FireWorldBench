@@ -33,7 +33,7 @@ python scripts/run_eval.py --split main_synthetic --max-requests 2
 python scripts/run_eval.py --split main_synthetic
 ```
 
-完成后，六项指标结果写入 `results/main_synthetic-task.json`（默认按 9 任务 × 2 轨 × 2 题型 = 36 格）。
+完成后，六项指标结果写入 `results/main_synthetic-physical.json`（默认按物理轴 P1-P5 × 2 轨 × 2 题型 = 20 格报告五层能力；可用 `--group-by fire` 看火灾轴五层、`--group-by task` 看细粒度 36 格）。
 
 两个正式测试集：
 
@@ -97,8 +97,8 @@ pip install -e .
 | Gold-linked Support | 越高越好 | open |
 
 - **Completion Accuracy**：choice 为选项集合与 Gold 的 Jaccard 相似度；open 为必填字段预测正确的比例。
-- 用 `--group-by` 分组报告，均不合并隐藏单格失败：`task`（9 任务 × 2 轨 × 2 题型 = 36 格）、
-  `physical`（P1-P5 × 2 轨 × 2 题型 = 20 格）、`fire`（T1-T5 × 2 轨 × 2 题型 = 20 格）。
+- 用 `--group-by` 分组报告，均不合并隐藏单格失败：`physical`（物理轴 P1-P5 × 2 轨 × 2 题型 = 20 格，默认）、
+  `fire`（火灾轴 T1-T5 × 2 轨 × 2 题型 = 20 格）、`task`（细粒度，36 格）。
 - 全部确定性计算，无模型判分。
 
 ## 脚本

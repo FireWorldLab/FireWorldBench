@@ -24,12 +24,16 @@ SPLITS = {
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--split", choices=tuple(SPLITS), required=True)
-    parser.add_argument("--group-by", choices=("task", "physical", "fire"), default="task",
-                        help="report cells by task (36), physical axis P1-P5 (20) or fire axis T1-T5 (20)")
+    parser.add_argument("--group-by", choices=("task", "physical", "fire"), default="physical",
+                        help="report cells by the five-layer physical axis P1-P5 (20, default), fire axis T1-T5 (20) "
+                             "or fine-grained task (36)")
     parser.add_argument("--provider", default="openai")
     parser.add_argument("--model", default=None, help="default: $OPENAI_MODEL")
     parser.add_argument("--max-requests", type=int, default=None,
                         help="run only the first N questions (for a quick test)")
+    parser.add_argument("--track", choices=("S", "I"), default=None,
+                        help="run only text track S or vision track I. Text-only models MUST use --track S "
+                             "(I-track items carry images and will fail on a text model); vision models may use --track I.")
     parser.add_argument("--data-dir", default=None, help="default: ./data")
     parser.add_argument("--out-dir", default="results")
     args = parser.parse_args()
@@ -62,6 +66,14 @@ def main():
            "--model", model]
     if args.max_requests:
         cmd += ["--max-requests", str(args.max_requests)]
+    if args.track:
+        cmd += ["--track", args.track]
+    if args.track == "I":
+        print("[track I] vision track: ensure your model endpoint supports images.", flush=True)
+    elif args.track == "S":
+        print("[track S] text track: running text-only items.", flush=True)
+    else:
+        print("[track all] running S+I together. Text-only model? pass --track S (I items carry images).", flush=True)
     print(">", " ".join(cmd), flush=True)
     subprocess.run(cmd, check=True)
 
