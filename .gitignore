@@ -1,0 +1,7 @@
+__pycache__/
+*.pyc
+runs/
+results/
+FireWorldBench/       # downloaded dataset
+*.manifest.json
+*.SHA256SUMS.txt

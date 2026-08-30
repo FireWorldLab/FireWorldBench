@@ -1,0 +1,7 @@
+L2-2 operational terminal-nowcast contract
+
+The target is the completed-window robust risk profile at the stated target time. Full three-channel observations for every region are supplied only before the target. At the target, a fixed sparse sensor network supplies exact temperature, visibility, and soot measurements only in R1, R3, R5, and R7; infer the other regions from their histories. This sensor placement is fixed for every item and is independent of the answer.
+
+Use temperature, visibility, and soot as the three hazard channels. Higher temperature and soot indicate greater risk; lower visibility indicates greater risk. Compare channels on the benchmark's calibrated risk scale learned from exposed training examples. The main-set profile is robust to one potentially unreliable reading and represents the region-driver pair with persistent support across the target window. runner_up_region is the next persistent competitor and risk_level is the selected pair's calibrated ordinal band.
+
+stability_phase is early, middle, late, or unstable according to when the final pair becomes persistent over the target history. winner_switch_count_bin is zero, one, or multiple. Apply this same terminal-nowcast contract to every main-set L2-2/S item.

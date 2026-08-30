@@ -1,0 +1,8 @@
+L2-2 operational terminal-nowcast contract
+
+The target is the completed-window robust risk profile at the stated target time. Only observations strictly before that time are supplied. Infer the terminal state from the persistent spatial and temporal pattern in this history; do not assume an unobserved value was provided.
+
+Use temperature, visibility, and soot as the three hazard channels. Higher temperature and soot indicate greater risk; lower visibility indicates greater risk. Compare channels on the benchmark's calibrated risk scale learned from exposed training examples. The main-set profile is robust to one potentially unreliable reading and represents the region-driver pair with persistent support across the target window. runner_up_region is the next persistent competitor and risk_level is the selected pair's calibrated ordinal band.
+
+stability_phase is early, middle, late, or unstable according to when the final pair becomes persistent over the target history. winner_switch_count_bin is zero, one, or multiple. Apply this same terminal-nowcast contract to every main-set L2-2/S item.
+
