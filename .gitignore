@@ -1,7 +1,28 @@
+# Byte-compiled / optimized / DLL files
 __pycache__/
-*.pyc
+*.py[cod]
+*$py.class
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# Environments
+.env
+.venv
+venv/
+env/
+
+# IDE
+.idea/
+.vscode/
+
+# FireWorldBench runtime outputs (never commit)
+data/main_synthetic/     # downloaded dataset (~660MB)
+data/mmodalfire_c06/     # downloaded dataset
+results/                 # evaluation outputs
 runs/
-results/
-FireWorldBench/       # downloaded dataset
-*.manifest.json
+*.jsonl.manifest.json
 *.SHA256SUMS.txt
