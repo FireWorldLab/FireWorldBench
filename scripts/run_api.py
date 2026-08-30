@@ -394,7 +394,7 @@ def build_request(provider: str, model: str, system: str, prompt: str, images: l
                 }
             elif mode == "json_object":
                 payload["response_format"] = {"type": "json_object"}
-            return "/v1/chat/completions", {
+            return "/chat/completions", {
                 "Authorization": "Bearer {key}", "Content-Type": "application/json",
             }, payload
         content = [{"type": "input_text", "text": prompt}]
@@ -406,7 +406,7 @@ def build_request(provider: str, model: str, system: str, prompt: str, images: l
             payload["text"] = {"format": {"type": "json_schema", "name": "fwb_fg9_report", "schema": schema, "strict": True}}
         elif mode == "json_object":
             payload["text"] = {"format": {"type": "json_object"}}
-        path = "/responses" if provider == "grok" else "/v1/responses"
+        path = "/responses" if provider == "grok" else "/responses"
         return path, {"Authorization": "Bearer {key}", "Content-Type": "application/json"}, payload
     if provider == "anthropic":
         content = [{"type": "text", "text": prompt}]
