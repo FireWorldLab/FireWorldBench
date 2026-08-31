@@ -6,7 +6,7 @@
 
 <font size=5><div align='center'>[[📊 Dataset](https://huggingface.co/datasets/Guaogua/FireWorldBench)] [[📖 Paper](Paper link to be added)] [[🏆 Leaderboard](Leaderboard link to be added)]</div></font>
 
-> The benchmark's motivation, design and analysis are described in the paper (to be provided by the authors). This repo is meant to get you **up and running quickly**.
+> The benchmark's motivation, design and analysis are described in the paper (to be provided by the authors).
 
 ## 🚀 Quick Start (evaluate your model)
 
