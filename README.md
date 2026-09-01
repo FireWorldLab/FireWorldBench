@@ -65,6 +65,19 @@ pip install -e .
 | `scripts/score_fg9_*.py` | Scorer internals |
 | `scripts/contracts/` | (Optional) frozen task contracts |
 
+## Metrics (FWB-FG9-SIX-METRICS)
+
+All six metrics are deterministic (no LLM judge) and scored over `status=ok` responses only:
+
+- **Completion Accuracy** — choice: Jaccard on option sets; open: mean required-field match (L3-1 uses inverse-class-frequency weights).
+- **Macro-F1 (Slot-MacroF1)** — choice: Sørensen–Dice on option sets (unchanged); open: per-slot exact-match F1 `2·TP/(2·TP+FP+FN)` (TP=exact match, FP=wrong value, FN=missing) macro-averaged over slots; **overall = (choice + open) / 2**.
+- **Evidence-F1** (open) — token P/R against gold evidence anchors.
+- **Mechanism Alignment** (open) — content-word overlap with gold mechanism statements.
+- **Brier Score** — `(confidence − completion)²`; lower is better.
+- **Gold-linked Support (GLS)** (open) — correct fields that are also grounded in the model's explanation.
+
+See `scripts/score_six_metrics.py` and `scripts/score_fg9_predictions.py` for the exact implementation.
+
 ## Citation
 
 (Paper BibTeX to be provided by the authors.)

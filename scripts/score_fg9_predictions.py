@@ -320,6 +320,53 @@ def macro_f1(pairs: list[tuple[Any, Any]]) -> float:
     return sum(scores) / len(scores)
 
 
+# --- Slot-MacroF1 primitives (per-slot exact-match F1, macro-averaged over slots) ---
+def dice(pred: Any, gold: Any) -> float:
+    """Sørensen–Dice on option sets (choice component, unchanged from prior definition)."""
+    ps, gs = set(pred or []), set(gold)
+    if not ps and not gs:
+        return 1.0
+    if not ps or not gs:
+        return 0.0
+    return 2 * len(ps & gs) / (len(ps) + len(gs))
+
+
+def slot_norm(v: Any) -> str:
+    return re.sub(r"[^a-z0-9]+", " ", str(v).lower()).strip()
+
+
+def slot_f1(pairs: list[tuple[Any, Any]]) -> float:
+    """Per-slot exact-match F1 = 2TP/(2TP+FP+FN). pairs = list[(gold, pred_or_None)]."""
+    tp = fp = fn = 0
+    for e, p in pairs:
+        if p is None:
+            fn += 1
+        elif slot_norm(e) == slot_norm(p):
+            tp += 1
+        else:
+            fp += 1
+    denom = 2 * tp + fp + fn
+    return 2 * tp / denom if denom else 0.0
+
+
+def slot_macro_f1(field_pairs: dict[str, list]) -> float:
+    """Macro-average per-slot exact-match F1 over fields. field_pairs = {field: [(gold,pred)]}."""
+    if not field_pairs:
+        return 0.0
+    vals = [slot_f1(ps) for ps in field_pairs.values()]
+    return sum(vals) / len(vals) if vals else 0.0
+
+
+def combine(choice_macro: float, open_slot_macro: float, has_c: bool, has_o: bool) -> float:
+    if has_c and has_o:
+        return (choice_macro + open_slot_macro) / 2
+    if has_c:
+        return choice_macro
+    if has_o:
+        return open_slot_macro
+    return 0.0
+
+
 def ece(rows: list[tuple[float, float]], bins: int = 10) -> float | None:
     if not rows:
         return None

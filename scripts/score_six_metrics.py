@@ -38,6 +38,22 @@ def gold_linked_items(gold_rows, prediction_rows, support_scorer):
     return output
 
 
+BIN_MAP = {"none": "none", "early": "present", "middle": "present", "late": "present", "present": "present"}
+
+
+def coarsen_l13(pred):
+    """L1-3 open: collapse first_violation_bin to {none, present}; lowercase violation_type."""
+    if not isinstance(pred, dict):
+        return pred
+    out = dict(pred)
+    if "first_violation_bin" in out:
+        out["first_violation_bin"] = BIN_MAP.get(str(out["first_violation_bin"]).lower(),
+                                                str(out["first_violation_bin"]).lower())
+    if "violation_type" in out:
+        out["violation_type"] = str(out["violation_type"]).lower()
+    return out
+
+
 def layer_label(row, group_by):
     """Return the cell label for a row under the requested grouping."""
     if group_by == "physical":
@@ -87,8 +103,12 @@ def main():
             parsed, _ = scorer.parse_object(value)
             if parsed and isinstance(parsed.get("confidence"), (int, float)): confidence = float(parsed["confidence"])
             ef1 = mf1 = 0.0
+            cd = scorer.dice(pred, expected)
         else:
-            pred, report, _ = scorer.normalize_open(value); gf, pf = scorer.flatten(gold["prediction"]), scorer.flatten(pred or {})
+            pred, report, _ = scorer.normalize_open(value)
+            if gold.get("task") == "L1-3":
+                pred = coarsen_l13(pred)
+            gf, pf = scorer.flatten(gold["prediction"]), scorer.flatten(pred or {})
             pairs = {field: (expected, pf.get(field)) for field, expected in gf.items()}; ratio = sum(a == b for a,b in pairs.values()) / len(pairs)
             if report:
                 confidence = float(report["confidence"]) if isinstance(report.get("confidence"), (int,float)) else None
@@ -107,9 +127,11 @@ def main():
                 mechanism_tokens=deep_scorer.toks(deep_scorer.text(report.get("mechanism","")))
                 mf1=len(gold_tokens&mechanism_tokens)/len(gold_tokens) if gold_tokens else 0
             else: ef1 = mf1 = 0.0
+            cd = None
         scored.append({"task":gold["task"],"physical_axis":gold.get("physical_axis"),"fire_axis":gold.get("fire_axis"),
                        "track":gold["track"],"question_type":gold["question_type"],"pairs":pairs,"ratio":ratio,
-                       "confidence":confidence,"correct":float(ratio==1),"evidence_f1":ef1,"mechanism_alignment":mf1})
+                       "confidence":confidence,"correct":float(ratio==1),"evidence_f1":ef1,"mechanism_alignment":mf1,
+                       "choice_dice":cd})
     gls = {row["qa_id"]:row["gold_linked_support"] for row in gold_linked_items(gold_rows,prediction_rows,support_scorer)}
     for row,gold in zip(scored,gold_rows): row["gold_linked_support"] = gls[gold["qa_id"]]
     groups=defaultdict(list)
@@ -120,8 +142,16 @@ def main():
             for field,pair in row["pairs"].items(): fp[field].append(pair)
         calibration=[(r["confidence"],r["correct"]) for r in rows if r["confidence"] is not None and 0<=r["confidence"]<=1]
         open_rows=[r for r in rows if r["question_type"]=="open"]
+        choice_rows=[r for r in rows if r["question_type"]=="choice"]
+        open_fp=defaultdict(list)
+        for row in open_rows:
+            for field,pair in row["pairs"].items(): open_fp[field].append(pair)
+        c_dice=[r["choice_dice"] for r in choice_rows]
+        choice_macro=sum(c_dice)/len(c_dice) if c_dice else 0.0
+        open_slot_macro=scorer.slot_macro_f1(open_fp)
+        macro_f1=scorer.combine(choice_macro, open_slot_macro, bool(choice_rows), bool(open_rows))
         return {"n":len(rows),"completion_accuracy":sum(r["ratio"] for r in rows)/len(rows),
-                "macro_f1":sum(scorer.macro_f1(pairs) for pairs in fp.values())/len(fp) if fp else 0,
+                "macro_f1":macro_f1,
                 "evidence_f1":sum(r["evidence_f1"] for r in open_rows)/len(open_rows) if open_rows else None,
                 "mechanism_alignment":sum(r["mechanism_alignment"] for r in open_rows)/len(open_rows) if open_rows else None,
                 "brier_score":sum((c-y)**2 for c,y in calibration)/len(calibration) if calibration else None,
