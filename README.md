@@ -46,6 +46,40 @@ cd scripts && bash download.sh          # add --mirror in mainland China
 ```
 
 
+## Dual-axis five-layer labels
+
+Physical axis (P1 easiest → P5 hardest; numbered on controlled-simulation figure Acc, 25 tracks including InternVL3):
+
+- P1 Temporal Evolution Forecasting ← L3-1, L3-2
+
+- P2 Physical Field Perception and Grounding ← L1-1, L2-1
+
+- P3 Cross-Field Coupling Understanding ← L1-2, L2-2
+
+- P4 Causal Mechanism Attribution ← L1-3, L2-3
+
+- P5 Counterfactual Intervention Reasoning ← L3-3
+
+
+
+Fire axis (T1 easiest → T5 hardest; same numbering as 2026-08-30):
+
+- T1 Fire Evolution Prediction ← L1-2, L3-1, L3-2
+
+- T2 Fire Early Warning ← L1-1
+
+- T3 Fire State Assessment ← L1-3, L2-1, L2-2
+
+- T4 Fire Intervention Decision-Making ← L3-3
+
+- T5 Fire Mechanism Diagnosis ← L2-3
+
+
+
+Real-world C06 formal test: **714** questions (357 choice + 357 open). The older 760 count included 46 L2-2 S-track items whose public history ended before the query target time; those items are not in the formal set.
+
+Labels are stored on each `questions.jsonl` / `gold.jsonl` row as `physical_axis` and `fire_axis`. Scoring uses `--group-by physical` or `--group-by fire`.
+
 ## Installation
 
 ```shell
