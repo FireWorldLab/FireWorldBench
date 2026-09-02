@@ -1,6 +1,6 @@
 {
   "schema": "FWB-FG9-DUAL-AXIS-v20260902",
-  "note": "Difficulty order on main_synthetic figure Acc (25 tracks, InternVL included). P1/T1 easiest. Fire axis unchanged from 2026-08-30 numbering. C06 formal test n=714.",
+  "note": "Difficulty order on main_synthetic figure Acc (25 tracks, InternVL included). P1/T1 easiest. Fire T2/T3 swapped vs 2026-08-30 so T1→T5 is also easy→hard. C06 formal test n=714.",
   "axes": {
     "physical": {
       "P1": "Temporal Evolution Forecasting",
@@ -18,15 +18,15 @@
     },
     "fire": {
       "T1": "Fire Evolution Prediction",
-      "T2": "Fire Early Warning",
-      "T3": "Fire State Assessment",
+      "T2": "Fire State Assessment",
+      "T3": "Fire Early Warning",
       "T4": "Fire Intervention Decision-Making",
       "T5": "Fire Mechanism Diagnosis"
     },
     "fire_zh": {
       "T1": "演化预测",
-      "T2": "早期预警",
-      "T3": "状态评估",
+      "T2": "状态评估",
+      "T3": "早期预警",
       "T4": "干预决策",
       "T5": "机制诊断"
     }
@@ -43,11 +43,11 @@
     "L3-3": "P5"
   },
   "task_to_fire": {
-    "L1-1": "T2",
+    "L1-1": "T3",
     "L1-2": "T1",
-    "L1-3": "T3",
-    "L2-1": "T3",
-    "L2-2": "T3",
+    "L1-3": "T2",
+    "L2-1": "T2",
+    "L2-2": "T2",
     "L2-3": "T5",
     "L3-1": "T1",
     "L3-2": "T1",
@@ -81,12 +81,12 @@
       "L3-2"
     ],
     "T2": [
-      "L1-1"
-    ],
-    "T3": [
       "L1-3",
       "L2-1",
       "L2-2"
+    ],
+    "T3": [
+      "L1-1"
     ],
     "T4": [
       "L3-3"
@@ -105,8 +105,8 @@
     },
     "fire": {
       "T1": 2944,
-      "T2": 1044,
-      "T3": 2504,
+      "T2": 2504,
+      "T3": 1044,
       "T4": 824,
       "T5": 1044
     }

@@ -62,13 +62,13 @@ Physical axis (P1 easiest → P5 hardest; numbered on controlled-simulation figu
 
 
 
-Fire axis (T1 easiest → T5 hardest; same numbering as 2026-08-30):
+Fire axis (T1 easiest → T5 hardest; numbered on the same controlled-simulation figure Acc as P; T2/T3 swapped vs 2026-08-30):
 
 - T1 Fire Evolution Prediction ← L1-2, L3-1, L3-2
 
-- T2 Fire Early Warning ← L1-1
+- T2 Fire State Assessment ← L1-3, L2-1, L2-2
 
-- T3 Fire State Assessment ← L1-3, L2-1, L2-2
+- T3 Fire Early Warning ← L1-1
 
 - T4 Fire Intervention Decision-Making ← L3-3
 
