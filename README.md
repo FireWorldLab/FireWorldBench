@@ -99,6 +99,29 @@ pip install -e .
 | `scripts/score_fg9_*.py` | Scorer internals |
 | `scripts/contracts/` | (Optional) frozen task contracts |
 
+## Three-stage fire axis and event families
+
+The reproducible relabeling/audit script is `scripts/relabel_event_families.py`,
+with its frozen contract in `scripts/contracts/three_stage_event_family.json`.
+The three fire-axis labels are `Localized Onset`, `Coupled Propagation`, and
+`Outcome Transition`. They are assigned from the question's task semantics and
+answer target, independently of `physical_axis`; `physical_axis` is copied
+unchanged. The script also builds a stable event-to-family manifest using the
+seven fixed paper families and reports unmatched records.
+
+Example:
+
+```shell
+python scripts/relabel_event_families.py \
+  --gold <testResult gold jsonl files> \
+  --questions <benchmark question jsonl files> \
+  --item-scores <official per-item score jsonl files> \
+  --output <output directory>
+```
+
+The output includes relabeled JSONL, `event_family_manifest.json`,
+`metrics_by_event_family.csv`, `metric_items.jsonl`, and `audit.json`.
+
 ## Citation
 
 (Paper BibTeX to be provided by the authors.)

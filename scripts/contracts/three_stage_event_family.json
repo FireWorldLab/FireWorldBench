@@ -1,0 +1,23 @@
+{
+  "schema": "FWB-FG9-THREE-STAGE-EVENT-FAMILY-v1",
+  "fire_axis": {
+    "Localized Onset": "Localized source, anomaly, violation, or fire-stage assessment.",
+    "Coupled Propagation": "Cross-region state, transport, coupling, or risk propagation.",
+    "Outcome Transition": "Future outcome, threshold crossing, intervention, or counterfactual transition."
+  },
+  "task_mapping": {
+    "L1-1": "Localized Onset", "L1-3": "Localized Onset", "L2-1": "Localized Onset",
+    "L1-2": "Coupled Propagation", "L2-2": "Coupled Propagation", "L2-3": "Coupled Propagation",
+    "L3-1": "Outcome Transition", "L3-2": "Outcome Transition", "L3-3": "Outcome Transition"
+  },
+  "event_families": [
+    "Transportation and Infrastructure",
+    "Office and Digital Facilities",
+    "Healthcare and Education",
+    "Commercial and Public Spaces",
+    "Residential and Care Settings",
+    "Industry, Energy, and Logistics",
+    "Wildland and Wildland--Urban Interface (WUI)"
+  ],
+  "physical_axis_policy": "physical_axis is copied byte-for-byte and never used to assign fire_axis"
+}
