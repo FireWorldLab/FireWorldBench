@@ -156,10 +156,9 @@ def main():
             qa_id = row.get("qa_id")
             info = gold_by_qa.get(qa_id)
             if info is None:
-                fire, fire_meta = classify_fire(row)
-                row["fire_axis"] = fire
                 audit.append({"kind": "question_unmatched_gold", "qa_id": qa_id, "source": path.as_posix(), "line": line,
-                              "fire_axis": fire, "fire_rule": fire_meta["rule"]})
+                              "excluded_from_formal_output": True})
+                continue
             else:
                 row["fire_axis"] = info["fire_axis"]
             rows.append(row)
