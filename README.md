@@ -103,8 +103,9 @@ pip install -e .
 
 The reproducible relabeling/audit script is `scripts/relabel_event_families.py`,
 with its frozen contract in `scripts/contracts/three_stage_event_family.json`.
-The three fire-axis labels are `Localized Onset`, `Coupled Propagation`, and
-`Outcome Transition`. They are assigned from the question's task semantics and
+The three fire-axis labels are `T1 Localized Onset` (局域起火),
+`T2 Coupled Propagation` (耦合蔓延), and `T3 Critical Transition` (临界转变).
+They are assigned from the question's task semantics and
 answer target, independently of `physical_axis`; `physical_axis` is copied
 unchanged. The script also builds a stable event-to-family manifest using the
 seven fixed paper families and reports unmatched records.

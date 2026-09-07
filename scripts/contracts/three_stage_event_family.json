@@ -1,14 +1,14 @@
 {
   "schema": "FWB-FG9-THREE-STAGE-EVENT-FAMILY-v1",
   "fire_axis": {
-    "Localized Onset": "Localized source, anomaly, violation, or fire-stage assessment.",
-    "Coupled Propagation": "Cross-region state, transport, coupling, or risk propagation.",
-    "Outcome Transition": "Future outcome, threshold crossing, intervention, or counterfactual transition."
+    "T1 Localized Onset": {"zh": "局域起火", "definition": "Localized source, anomaly, violation, or fire-stage assessment."},
+    "T2 Coupled Propagation": {"zh": "耦合蔓延", "definition": "Cross-region state, transport, coupling, or risk propagation."},
+    "T3 Critical Transition": {"zh": "临界转变", "definition": "Future outcome, threshold crossing, intervention, or counterfactual transition."}
   },
   "task_mapping": {
-    "L1-1": "Localized Onset", "L1-3": "Localized Onset", "L2-1": "Localized Onset",
-    "L1-2": "Coupled Propagation", "L2-2": "Coupled Propagation", "L2-3": "Coupled Propagation",
-    "L3-1": "Outcome Transition", "L3-2": "Outcome Transition", "L3-3": "Outcome Transition"
+    "L1-1": "T1 Localized Onset", "L1-3": "T1 Localized Onset", "L2-1": "T1 Localized Onset",
+    "L1-2": "T2 Coupled Propagation", "L2-2": "T2 Coupled Propagation", "L2-3": "T2 Coupled Propagation",
+    "L3-1": "T3 Critical Transition", "L3-2": "T3 Critical Transition", "L3-3": "T3 Critical Transition"
   },
   "event_families": [
     "Transportation and Infrastructure",

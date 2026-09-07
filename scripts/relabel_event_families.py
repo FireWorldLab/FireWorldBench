@@ -16,14 +16,14 @@ from collections import Counter, defaultdict
 from pathlib import Path
 
 FIRE_AXIS = {
-    "Localized Onset": "localized source, anomaly, violation, or fire-stage assessment",
-    "Coupled Propagation": "cross-region state, transport, coupling, or risk propagation",
-    "Outcome Transition": "future outcome, threshold crossing, intervention, or counterfactual transition",
+    "T1 Localized Onset": "localized source, anomaly, violation, or fire-stage assessment",
+    "T2 Coupled Propagation": "cross-region state, transport, coupling, or risk propagation",
+    "T3 Critical Transition": "future outcome, threshold crossing, intervention, or counterfactual transition",
 }
 TASK_FIRE = {
-    "L1-1": "Localized Onset", "L1-3": "Localized Onset", "L2-1": "Localized Onset",
-    "L1-2": "Coupled Propagation", "L2-2": "Coupled Propagation", "L2-3": "Coupled Propagation",
-    "L3-1": "Outcome Transition", "L3-2": "Outcome Transition", "L3-3": "Outcome Transition",
+    "L1-1": "T1 Localized Onset", "L1-3": "T1 Localized Onset", "L2-1": "T1 Localized Onset",
+    "L1-2": "T2 Coupled Propagation", "L2-2": "T2 Coupled Propagation", "L2-3": "T2 Coupled Propagation",
+    "L3-1": "T3 Critical Transition", "L3-2": "T3 Critical Transition", "L3-3": "T3 Critical Transition",
 }
 
 FAMILIES = [
