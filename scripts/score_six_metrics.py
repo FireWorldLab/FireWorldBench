@@ -74,7 +74,7 @@ def main():
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--group-by", choices=("task", "physical", "fire"), default="physical",
                         help="group cells by the five-layer physical axis (physical -> P1-P5, 20 cells, default), "
-                             "fire axis (fire -> T1-T5, 20 cells) or fine-grained task (36 cells). "
+                             "fire axis (fire -> T1-T3) or fine-grained task (9 tasks). "
                              "Requires gold rows carrying physical_axis / fire_axis labels.")
     args = parser.parse_args()
     package = Path(__file__).resolve().parent

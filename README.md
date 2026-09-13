@@ -33,7 +33,7 @@ python scripts/run_eval.py --split main_synthetic --max-requests 2
 python scripts/run_eval.py --split main_synthetic
 ```
 
-After it finishes, the six metrics are written to `results/main_synthetic-physical.json` (by default grouped by the physics axis P1-P5 × 2 tracks × 2 question types = 20 cells; use `--group-by fire` for the fire axis, or `--group-by task` for the fine-grained 36 cells).
+After it finishes, the six metrics are written to `results/main_synthetic-physical.json` (by default grouped by the physical-capability axis P1–P5 × 2 tracks × 2 question types; use `--group-by fire` for the three-level fire-scenario axis T1–T3, or `--group-by task` for the fine-grained 9-task cells).
 
 > Text-only models must run with `--track S` (I-track items carry images and will fail on a text-only model); vision models may use `--track I`. See `python scripts/run_eval.py --help`.
 
@@ -46,37 +46,25 @@ cd scripts && bash download.sh          # add --mirror in mainland China
 ```
 
 
-## Dual-axis five-layer labels
+## Dual-axis labels (paper Section 3.1)
 
-Physical axis (P1 easiest → P5 hardest; numbered on controlled-simulation figure Acc, 25 tracks including InternVL3):
+Physical capability axis P1–P5:
 
 - P1 Temporal Evolution Forecasting ← L3-1, L3-2
-
 - P2 Physical Field Perception and Grounding ← L1-1, L2-1
-
 - P3 Cross-Field Coupling Understanding ← L1-2, L2-2
-
 - P4 Causal Mechanism Attribution ← L1-3, L2-3
-
 - P5 Counterfactual Intervention Reasoning ← L3-3
 
+Fire scenario task axis T1–T3:
 
+- T1 Localized Onset ← L1-1, L1-3, L2-1
+- T2 Coupled Propagation ← L1-2, L2-2, L2-3
+- T3 Critical Transition ← L3-1, L3-2, L3-3
 
-Fire axis (T1 easiest → T5 hardest; numbered on the same controlled-simulation figure Acc as P; T2/T3 swapped vs 2026-08-30):
+Six metrics: Acc, F1, Brier (choice and open); Evi-F1, Mech, GLS (open only).
 
-- T1 Fire Evolution Prediction ← L1-2, L3-1, L3-2
-
-- T2 Fire State Assessment ← L1-3, L2-1, L2-2
-
-- T3 Fire Early Warning ← L1-1
-
-- T4 Fire Intervention Decision-Making ← L3-3
-
-- T5 Fire Mechanism Diagnosis ← L2-3
-
-
-
-Real-world C06 formal test: **714** questions (357 choice + 357 open). The older 760 count included 46 L2-2 S-track items whose public history ended before the query target time; those items are not in the formal set.
+Paper protocol: **25 tracks** (15 S-track + 10 I-track). Controlled simulation **8,360** QA; real-world-aligned C06 **714** QA (357 choice + 357 open). The older 760 count included 46 L2-2 S-track items whose public history ended before the query target time; those items are not in the formal set.
 
 Labels are stored on each `questions.jsonl` / `gold.jsonl` row as `physical_axis` and `fire_axis`. Scoring uses `--group-by physical` or `--group-by fire`.
 

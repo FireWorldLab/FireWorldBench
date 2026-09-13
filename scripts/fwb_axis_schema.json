@@ -1,0 +1,30 @@
+{
+  "schema": "FWB-DUAL-AXIS-PAPER-v20260914",
+  "source": "Fire.pdf Section 3.1 + expert-review L-task mapping (Outcome Transition renamed Critical Transition)",
+  "physical": {
+    "P1": {"en": "Temporal Evolution Forecasting", "tasks": ["L3-1", "L3-2"]},
+    "P2": {"en": "Physical Field Perception and Grounding", "tasks": ["L1-1", "L2-1"]},
+    "P3": {"en": "Cross-Field Coupling Understanding", "tasks": ["L1-2", "L2-2"]},
+    "P4": {"en": "Causal Mechanism Attribution", "tasks": ["L1-3", "L2-3"]},
+    "P5": {"en": "Counterfactual Intervention Reasoning", "tasks": ["L3-3"]}
+  },
+  "fire": {
+    "T1": {"en": "Localized Onset", "tasks": ["L1-1", "L1-3", "L2-1"]},
+    "T2": {"en": "Coupled Propagation", "tasks": ["L1-2", "L2-2", "L2-3"]},
+    "T3": {"en": "Critical Transition", "tasks": ["L3-1", "L3-2", "L3-3"]}
+  },
+  "metrics": ["Acc", "F1", "Brier", "Evi-F1", "Mech", "GLS"],
+  "tracks": {
+    "S": 15,
+    "I": 10,
+    "total_paper_tracks": 25
+  },
+  "model_stems": [
+    "llama31_8b_S", "qwen3_8b_S", "gemma3_12b_it_S", "gemma3_27b_S", "qwen3_32b_S",
+    "llama33_70b_S", "qwen3next_80b_S", "glm45_air_S", "qwen3_235b_S", "deepseek_v3_S", "kimi_k2_S",
+    "gpt56_luna_S", "gemini25flash_S", "claude_haiku_45_S", "qwen35_plus_S",
+    "internvl3_8b_I", "internvl3_38b_I", "internvl3_78b_I",
+    "qwen3vl8b_I", "qwen3vl32b_I", "qwen3vl235b_I",
+    "gpt56_luna_I", "gemini25flash_I", "claude_haiku_45_I", "qwen35_plus_I"
+  ]
+}

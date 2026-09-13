@@ -25,7 +25,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--split", choices=tuple(SPLITS), required=True)
     parser.add_argument("--group-by", choices=("task", "physical", "fire"), default="physical",
-                        help="report cells by the five-layer physical axis P1-P5 (20, default), fire axis T1-T5 (20) "
+                        help="report cells by physical axis P1-P5 (default), fire axis T1-T3, "
                              "or fine-grained task (36)")
     parser.add_argument("--provider", default="openai")
     parser.add_argument("--model", default=None, help="default: $OPENAI_MODEL")
