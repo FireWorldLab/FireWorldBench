@@ -1,116 +1,54 @@
 # FireWorldBench
 
-![Task](https://img.shields.io/badge/Task-Fire--Physics--VQA-red)
-![Multi-Modal](https://img.shields.io/badge/Task-Multi--Modal-red)
-![Dataset](https://img.shields.io/badge/Dataset-FireWorldBench-blue)
+FireWorldBench is a multimodal benchmark for evaluating fire-physics world understanding.
 
-<font size=5><div align='center'>[[📊 Dataset](https://huggingface.co/datasets/Guaogua/FireWorldBench)] [[📖 Paper](Paper link to be added)] [[🏆 Leaderboard](Leaderboard link to be added)]</div></font>
+This repository contains evaluation code, metric implementations, task contracts, and schema definitions. Dataset distribution details and author-identifying links are intentionally omitted for anonymous review.
 
-> The benchmark's motivation, design and analysis are described in the paper (to be provided by the authors).
+## Evaluation
 
-## 🚀 Quick Start (evaluate your model)
-
-Full pipeline: **download data → configure a model endpoint → run → get the six metrics.**
+Install the local package and run the evaluation pipeline after placing the benchmark data under `data/`:
 
 ```shell
-# 1. Install dependencies
 pip install -e .
-
-# 2. Download data from Hugging Face (~660MB; add --mirror in mainland China)
-cd scripts
-bash download.sh --mirror
-cd ..
-
-# 3. Configure an OpenAI-compatible model endpoint
-export OPENAI_BASE_URL="https://your-endpoint/v1"
-export OPENAI_API_KEY="your-key"
-export OPENAI_MODEL="your-model"
-
-# 4. (Optional) quick check with 2 items
 python scripts/run_eval.py --split main_synthetic --max-requests 2
-
-# 5. Run the full test split and compute the six metrics
 python scripts/run_eval.py --split main_synthetic
 ```
 
-After it finishes, the six metrics are written to `results/main_synthetic-physical.json` (by default grouped by the physical-capability axis P1–P5 × 2 tracks × 2 question types; use `--group-by fire` for the three-level fire-scenario axis T1–T3, or `--group-by task` for the fine-grained 9-task cells).
+Text-only models should use `--track S`; vision-language models may use `--track I`. Run `python scripts/run_eval.py --help` for the available options.
 
-> Text-only models must run with `--track S` (I-track items carry images and will fail on a text-only model); vision models may use `--track I`. See `python scripts/run_eval.py --help`.
+By default, results are written under `results/` and grouped by the physical-capability axis. Alternative groupings are available through `--group-by fire` and `--group-by task`.
 
+## Benchmark axes
 
+Physical capability axis:
 
-Data is published on Hugging Face: **[`Guaogua/FireWorldBench`](https://huggingface.co/datasets/Guaogua/FireWorldBench)**
+- P1 Temporal Evolution Forecasting
+- P2 Physical Field Perception and Grounding
+- P3 Cross-Field Coupling Understanding
+- P4 Causal Mechanism Attribution
+- P5 Counterfactual Intervention Reasoning
 
-```shell
-cd scripts && bash download.sh          # add --mirror in mainland China
-```
+Fire scenario task axis:
 
+- T1 Localized Onset
+- T2 Coupled Propagation
+- T3 Critical Transition
 
-## Dual-axis labels (paper Section 3.1)
-
-Physical capability axis P1–P5:
-
-- P1 Temporal Evolution Forecasting ← L3-1, L3-2
-- P2 Physical Field Perception and Grounding ← L1-1, L2-1
-- P3 Cross-Field Coupling Understanding ← L1-2, L2-2
-- P4 Causal Mechanism Attribution ← L1-3, L2-3
-- P5 Counterfactual Intervention Reasoning ← L3-3
-
-Fire scenario task axis T1–T3:
-
-- T1 Localized Onset ← L1-1, L1-3, L2-1
-- T2 Coupled Propagation ← L1-2, L2-2, L2-3
-- T3 Critical Transition ← L3-1, L3-2, L3-3
-
-Six metrics: Acc, F1, Brier (choice and open); Evi-F1, Mech, GLS (open only).
-
-Paper protocol: **25 tracks** (15 S-track + 10 I-track). Controlled simulation **8,360** QA; real-world-aligned C06 **714** QA (357 choice + 357 open). The older 760 count included 46 L2-2 S-track items whose public history ended before the query target time; those items are not in the formal set.
-
-Labels are stored on each `questions.jsonl` / `gold.jsonl` row as `physical_axis` and `fire_axis`. Scoring uses `--group-by physical` or `--group-by fire`.
-
-## Installation
-
-```shell
-pip install -e .
-```
-
-(Or without pip: `pip install -r scripts/requirements.txt`.)
+The six reported metrics are Acc, F1, Brier, Evi-F1, Mech, and GLS. Acc, F1, and Brier apply to choice and open questions; the remaining metrics apply to open questions.
 
 ## Scripts
 
 | Script | Purpose |
 |---|---|
-| `scripts/download.sh` | Download data from Hugging Face |
-| `scripts/run_eval.py` | One-click pipeline: run + compute the six metrics |
-| `scripts/run_api.py` | Multimodal API runner (resumable, **never reads Gold**) |
-| `scripts/score_six_metrics.py` | Deterministic six-metric scorer |
-| `scripts/score_fg9_*.py` | Scorer internals |
-| `scripts/contracts/` | (Optional) frozen task contracts |
+| `scripts/run_eval.py` | Run inference and compute the six metrics |
+| `scripts/run_api.py` | Resumable multimodal API runner |
+| `scripts/score_six_metrics.py` | Deterministic metric computation |
+| `scripts/score_fg9_*.py` | Scoring internals |
+| `scripts/relabel_event_families.py` | Reproduce event-family labels and audits |
+| `scripts/contracts/` | Frozen task contracts |
 
-## Three-stage fire axis and event families
+The repository does not include the benchmark dataset. Code paths that depend on unavailable data may not run in this anonymous-review snapshot.
 
-The reproducible relabeling/audit script is `scripts/relabel_event_families.py`,
-with its frozen contract in `scripts/contracts/three_stage_event_family.json`.
-The three fire-axis labels are `T1 Localized Onset` (局域起火),
-`T2 Coupled Propagation` (耦合蔓延), and `T3 Critical Transition` (临界转变).
-They are assigned from the question's task semantics and
-answer target, independently of `physical_axis`; `physical_axis` is copied
-unchanged. The script also builds a stable event-to-family manifest using the
-seven fixed paper families and reports unmatched records.
+## Anonymous review
 
-Example:
-
-```shell
-python scripts/relabel_event_families.py \
-  --gold <testResult gold jsonl files> \
-  --questions <benchmark question jsonl files> \
-  --item-scores <official per-item score jsonl files> \
-  --output <output directory>
-```
-
-The output includes relabeled JSONL, `event_family_manifest.json`,
-`metrics_by_event_family.csv`, `metric_items.jsonl`, and `audit.json`.
-
-## Citation
-
-(Paper BibTeX to be provided by the authors.)
+Author names, affiliations, account identifiers, repository links, dataset-hosting links, acknowledgements, and citation metadata have been omitted to preserve double-blind review.

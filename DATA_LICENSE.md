@@ -1,13 +1,7 @@
-# Data License — CC BY 4.0
+# Data License
 
-The dataset content (the benchmark questions, Gold answers, and associated
-assets distributed via `Guaogua/FireWorldBench`) is licensed under the
-**Creative Commons Attribution 4.0 International (CC BY 4.0)** license:
+The benchmark questions, gold answers, and associated assets are licensed under the Creative Commons Attribution 4.0 International license.
 
-<https://creativecommons.org/licenses/by/4.0/>
+The dataset itself is not distributed in this anonymous-review repository. Distribution locations and attribution details are intentionally omitted during double-blind review.
 
-You are free to share and adapt the material for any purpose, provided you give
-appropriate credit (e.g. citing the paper / this repository).
-
-The evaluation and download scripts in this repository are licensed separately
-under the MIT License (see `LICENSE`).
+The evaluation code is licensed separately as described in `LICENSE`.
